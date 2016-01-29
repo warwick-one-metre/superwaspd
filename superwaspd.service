@@ -1,0 +1,11 @@
+[Unit]
+Description=Daemon for exposing the SuperWASP weather log via Pyro.
+After=syslog.target
+
+[Service]
+Restart=on-failure
+Type=simple
+ExecStart=/usr/bin/env python3 -u /usr/bin/superwaspd
+StandardOutput=syslog
+StandardError=syslog
+

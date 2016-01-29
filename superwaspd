@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+#
+# This file is part of superwaspd.
+#
+# superwaspd is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# superwaspd is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with superwaspd.  If not, see <http://www.gnu.org/licenses/>.
+
+"""Front end for the SuperWASP weather log the Warwick one-metre telescope"""
+
+import datetime
+import urllib.request
+import Pyro4
+
+PYRO_HOST = '192.168.0.102'
+PYRO_PORT = 9007
+PYRO_NAME = 'superwasp_daemon'
+
+SUPERWASP_WEATHER_URI = 'http://wasp.warwick.ac.uk/swasp/main/monitor/public/weather.log'
+SUPERWASP_QUERY_TIMEOUT = 5
+
+# pylint: disable=broad-except
+# pylint: disable=too-few-public-methods
+# pylint: disable=no-self-use
+
+class SuperWASPWeatherDaemon:
+    """Wraps a web request to the SuperWASP Weather log"""
+    def last_measurement(self):
+        """Query the latest valid measurement.
+        May return None if no data is available"""
+        now = datetime.datetime.utcnow
+        try:
+            with urllib.request.urlopen(SUPERWASP_WEATHER_URI) as response:
+                data = response.readlines()[-1].decode('ascii').split()
+
+            # TODO: Convert swasp mjd to date
+            date = now()
+
+            return {
+                'date': date.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'superwasp_sky_temp': float(data[8]),
+                'superwasp_ext_humidity': float(data[14]),
+                'superwasp_dew_point_delta': float(data[11]) - float(data[17]),
+            }
+
+        except Exception as exception:
+            print('{} ERROR: failed to query from SuperWASP weather log: {}' \
+                  .format(datetime.datetime.utcnow(), str(exception)))
+            return None
+
+def spawn_daemon():
+    """Spawns the daemon and registers it with Pyro"""
+    Pyro4.config.COMMTIMEOUT = 5
+
+    pyro = Pyro4.Daemon(host=PYRO_HOST, port=PYRO_PORT)
+    superwasp = SuperWASPWeatherDaemon()
+    uri = pyro.register(superwasp, objectId=PYRO_NAME)
+
+    print('Starting SuperWASP weather log daemon with Pyro ID:', uri)
+    pyro.requestLoop()
+    print('Stopping SuperWASP weather log with Pyro ID:', uri)
+
+if __name__ == '__main__':
+    spawn_daemon()
