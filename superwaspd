@@ -49,7 +49,7 @@ class SuperWASPWeatherDaemon:
                 'date': date.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 'superwasp_sky_temp': float(data[8]),
                 'superwasp_ext_humidity': float(data[14]),
-                'superwasp_dew_point_delta': float(data[11]) - float(data[17]),
+                'superwasp_dew_point_delta': round(float(data[11]) - float(data[17]), 2),
             }
 
         except Exception as exception:
