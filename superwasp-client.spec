@@ -1,5 +1,5 @@
 Name:      onemetre-superwasp-client
-Version:   1.1
+Version:   1.2
 Release:   1
 Url:       https://github.com/warwick-one-metre/superwaspd
 Summary:   SuperWASP weather log client for the Warwick one-metre telescope.
@@ -15,7 +15,9 @@ superwasp is a commandline utility that queries the SuperWASP weather log daemon
 
 %build
 mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}/etc/bash_completion.d
 %{__install} %{_sourcedir}/superwasp %{buildroot}%{_bindir}
+%{__install} %{_sourcedir}/completion/superwasp %{buildroot}/etc/bash_completion.d/superwasp
 
 # Install python dependencies
 # This is horrible, but it seems to be the only way that actually works!
@@ -24,5 +26,6 @@ pip3 install Pyro4
 %files
 %defattr(0755,root,root,-)
 %{_bindir}/superwasp
+/etc/bash_completion.d/superwasp
 
 %changelog
