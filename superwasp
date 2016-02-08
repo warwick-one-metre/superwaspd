@@ -43,10 +43,10 @@ def print_status():
     if latest is not None:
         date = datetime.datetime.strptime(latest['date'], '%Y-%m-%dT%H:%M:%SZ')
         print('Data received \033[1m{}\033[0m:'.format(date))
-        print(u'  External Hum.: \033[1m{} %RH\033[0m'.format(latest['superwasp_ext_humidity']))
-        print(u'       Sky Temp: \033[1m{} \u2103\033[0m'.format(latest['superwasp_sky_temp']))
+        print(u'  External Hum.: \033[1m{} %RH\033[0m'.format(latest['ext_humidity']))
+        print(u'       Sky Temp: \033[1m{} \u2103\033[0m'.format(latest['sky_temp']))
         print(u'Temp. > Dew Pt.: \033[1m{} \u2103\033[0m'.format(
-            latest['superwasp_dew_point_delta']))
+            latest['dew_point_delta']))
         print()
     else:
         print('error: failed to query data')
