@@ -1,12 +1,12 @@
 Name:      onemetre-superwasp-server
-Version:   1.4
+Version:   1.5
 Release:   1
 Url:       https://github.com/warwick-one-metre/superwaspd
 Summary:   SuperWASP weather log client for the Warwick one-metre telescope.
 License:   GPL-3.0
 Group:     Unspecified
 BuildArch: noarch
-Requires:  python3, %{?systemd_requires}
+Requires:  python3, python3-Pyro4, %{?systemd_requires}
 BuildRequires: systemd-rpm-macros
 
 %description
@@ -27,10 +27,6 @@ mkdir -p %{buildroot}%{_unitdir}
 %post
 %service_add_post superwaspd.service
 %fillup_and_insserv -f -y superwaspd.service
-
-# Install python dependencies
-# This is horrible, but it seems to be the only way that actually works!
-pip3 install Pyro4
 
 %preun
 %stop_on_removal superwaspd.service
