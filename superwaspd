@@ -21,6 +21,9 @@ import datetime
 import urllib.request
 import Pyro4
 
+# Set automatically when generating RPM package
+SOFTWARE_VERSION = 'UNKNOWN'
+
 PYRO_HOST = '192.168.0.102'
 PYRO_PORT = 9007
 PYRO_NAME = 'superwasp_daemon'
@@ -50,6 +53,7 @@ class SuperWASPWeatherDaemon:
                 'sky_temp': float(data[8]),
                 'ext_humidity': float(data[14]),
                 'dew_point_delta': round(float(data[11]) - float(data[17]), 2),
+                'software_version': SOFTWARE_VERSION
             }
 
         except Exception as exception:
