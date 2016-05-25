@@ -51,6 +51,7 @@ class SuperWASPWeatherDaemon:
             return {
                 'date': date.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 'sky_temp': float(data[8]),
+                'wind_speed' : int(data[1]),
                 'ext_humidity': float(data[14]),
                 'dew_point_delta': round(float(data[11]) - float(data[17]), 2),
                 'software_version': SOFTWARE_VERSION
