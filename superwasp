@@ -47,10 +47,13 @@ def print_status():
     if latest is not None:
         date = datetime.datetime.strptime(latest['date'], '%Y-%m-%dT%H:%M:%SZ')
         print('Data received ' + FMT_BOLD + str(date) + ':' + FMT_CLEAR)
+        print(' Wind Direction: ' + FMT_BOLD + str(latest['wind_direction']) + '\u00B0' + FMT_CLEAR)
+        print('     Wind Speed: ' + FMT_BOLD + str(latest['wind_speed']) + ' km/h' + FMT_CLEAR)
         print('  External Hum.: ' + FMT_BOLD + str(latest['ext_humidity']) + ' %RH' + FMT_CLEAR)
         print('       Sky Temp: ' + FMT_BOLD + str(latest['sky_temp']) + '\u00B0C' + FMT_CLEAR)
         print('Temp. > Dew Pt.: ' + FMT_BOLD + str(latest['dew_point_delta']) + '\u00B0C' + \
               FMT_CLEAR)
+
         print()
     else:
         print('error: failed to query data')
