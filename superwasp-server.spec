@@ -1,5 +1,5 @@
 Name:      onemetre-superwasp-server
-Version:   1.8
+Version:   1.9
 Release:   0
 Url:       https://github.com/warwick-one-metre/superwaspd
 Summary:   SuperWASP weather log client for the Warwick one-metre telescope.
