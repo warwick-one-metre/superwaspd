@@ -20,13 +20,10 @@
 import datetime
 import urllib.request
 import Pyro4
+import warwick.observatory as observatory
 
 # Set automatically when generating RPM package
 SOFTWARE_VERSION = 'UNKNOWN'
-
-PYRO_HOST = '192.168.0.102'
-PYRO_PORT = 9007
-PYRO_NAME = 'superwasp_daemon'
 
 SUPERWASP_WEATHER_URI = 'http://wasp.warwick.ac.uk/swasp/main/monitor/public/weather.log'
 SUPERWASP_QUERY_TIMEOUT = 5
@@ -37,6 +34,8 @@ SUPERWASP_QUERY_TIMEOUT = 5
 
 class SuperWASPWeatherDaemon:
     """Wraps a web request to the SuperWASP Weather log"""
+
+    @Pyro4.expose
     def last_measurement(self):
         """Query the latest valid measurement.
         May return None if no data is available"""
@@ -63,19 +62,9 @@ class SuperWASPWeatherDaemon:
         except Exception as exception:
             print('{} ERROR: failed to query from SuperWASP weather log: {}' \
                   .format(datetime.datetime.utcnow(), str(exception)))
+            observatory.log.error('superwaspd', 'Failed to read weather.log (' \
+                                  + str(exception) + ')')
             return None
 
-def spawn_daemon():
-    """Spawns the daemon and registers it with Pyro"""
-    Pyro4.config.COMMTIMEOUT = 5
-
-    pyro = Pyro4.Daemon(host=PYRO_HOST, port=PYRO_PORT)
-    superwasp = SuperWASPWeatherDaemon()
-    uri = pyro.register(superwasp, objectId=PYRO_NAME)
-
-    print('Starting SuperWASP weather log daemon with Pyro ID:', uri)
-    pyro.requestLoop()
-    print('Stopping SuperWASP weather log with Pyro ID:', uri)
-
 if __name__ == '__main__':
-    spawn_daemon()
+    observatory.daemons.superwasp_log.launch(SuperWASPWeatherDaemon())
