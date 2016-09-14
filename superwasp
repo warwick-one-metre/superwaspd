@@ -51,6 +51,7 @@ def print_status():
         print('       Sky Temp: ' + FMT_BOLD + str(latest['sky_temp']) + '\u00B0C' + FMT_CLEAR)
         print('Temp. > Dew Pt.: ' + FMT_BOLD + str(latest['dew_point_delta']) + '\u00B0C' + \
               FMT_CLEAR)
+        print('       Pressure: ' + FMT_BOLD + str(latest['pressure']) + ' hPa' + FMT_CLEAR)
 
         print()
     else:
