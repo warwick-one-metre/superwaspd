@@ -25,7 +25,7 @@ import warwick.observatory as observatory
 # Set automatically when generating RPM package
 SOFTWARE_VERSION = 'UNKNOWN'
 
-SUPERWASP_WEATHER_URI = 'http://wasp.warwick.ac.uk/swasp/main/monitor/public/weather.log'
+SUPERWASP_WEATHER_URI = 'http://192.168.0.53/public/weather.log'
 SUPERWASP_QUERY_TIMEOUT = 5
 
 # pylint: disable=broad-except
