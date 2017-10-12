@@ -11,8 +11,8 @@ all:
 	mkdir -p build
 	cp superwaspd superwaspd.bak
 	awk '{sub("SOFTWARE_VERSION = .*$$","SOFTWARE_VERSION = \"$(SERVER_VERSION) ($(GIT_VERSION))\""); print $0}' superwaspd.bak > superwaspd
-	${RPMBUILD} -ba superwasp-server.spec
-	${RPMBUILD} -ba superwasp-client.spec
+	${RPMBUILD} -ba observatory-superwasp-server.spec
+	${RPMBUILD} -ba observatory-superwasp-client.spec
 	mv build/noarch/*.rpm .
 	rm -rf build
 	mv superwaspd.bak superwaspd

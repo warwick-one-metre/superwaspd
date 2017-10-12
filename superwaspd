@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.4
 #
 # This file is part of superwaspd.
 #
@@ -20,13 +20,14 @@
 import datetime
 import urllib.request
 import Pyro4
-import warwick.observatory as observatory
+import astropy.time
+from warwick.observatory.common import daemons, log
 
 # Set automatically when generating RPM package
 SOFTWARE_VERSION = 'UNKNOWN'
 
-SUPERWASP_WEATHER_URI = 'http://192.168.0.53/public/weather.log'
-SUPERWASP_QUERY_TIMEOUT = 5
+WEATHER_URI = 'http://192.168.0.53/public/weather.log'
+QUERY_TIMEOUT = 3
 
 # pylint: disable=broad-except
 # pylint: disable=too-few-public-methods
@@ -34,18 +35,23 @@ SUPERWASP_QUERY_TIMEOUT = 5
 
 class SuperWASPWeatherDaemon:
     """Wraps a web request to the SuperWASP Weather log"""
+    def __init__(self):
+        self._query_error = False
 
     @Pyro4.expose
     def last_measurement(self):
         """Query the latest valid measurement.
         May return None if no data is available"""
-        now = datetime.datetime.utcnow
         try:
-            with urllib.request.urlopen(SUPERWASP_WEATHER_URI) as response:
+            with urllib.request.urlopen(WEATHER_URI, timeout=QUERY_TIMEOUT) as response:
                 data = response.readlines()[-1].decode('ascii').split()
 
-            # TODO: Convert swasp mjd to date
-            date = now()
+            # Convert swasp jd to UTC datetime
+            date = astropy.time.Time(float(data[0]), format='jd').datetime
+
+            if self._query_error:
+                log.info('superwaspd', 'Restored contact with SuperWASP weather log')
+                self._query_error = False
 
             return {
                 'date': date.strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -63,9 +69,12 @@ class SuperWASPWeatherDaemon:
         except Exception as exception:
             print('{} ERROR: failed to query from SuperWASP weather log: {}' \
                   .format(datetime.datetime.utcnow(), str(exception)))
-            observatory.log.error('superwaspd', 'Failed to read weather.log (' \
-                                  + str(exception) + ')')
+
+            if not self._query_error:
+                log.error('superwaspd', 'Lost contact with SuperWASP weather log')
+                self._query_error = True
+
             return None
 
 if __name__ == '__main__':
-    observatory.daemons.superwasp_log.launch(SuperWASPWeatherDaemon())
+    daemons.superwasp_log.launch(SuperWASPWeatherDaemon())
