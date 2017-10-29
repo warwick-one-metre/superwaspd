@@ -20,4 +20,10 @@ The service will automatically start on system boot, or you can start it immedia
 sudo systemctl start superwaspd.service
 ```
 
+Finally, open a port in the firewall so that other machines on the network can access the daemon:
+```
+sudo firewall-cmd --zone=public --add-port=9007/tcp --permanent
+sudo firewall-cmd --reload
+```
+
 The URL for the superwasp weather log is hardcoded in `superwaspd`.  If this ever changes it should be updated here.
