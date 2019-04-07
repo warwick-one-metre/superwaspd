@@ -1,5 +1,5 @@
 Name:      observatory-superwasp-server
-Version:   2.1.0
+Version:   2.1.1
 Release:   0
 Url:       https://github.com/warwick-one-metre/superwaspd
 Summary:   SuperWASP weather log client for the Warwick one-metre telescope.
@@ -17,6 +17,7 @@ superwaspd is a Pyro frontend for querying the SuperWASP weather log via http.
 %build
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_unitdir}
+mkdir -p %{buildroot}/var/tmp/daemon_home/astropy
 
 %{__install} %{_sourcedir}/superwaspd %{buildroot}%{_bindir}
 %{__install} %{_sourcedir}/superwaspd.service %{buildroot}%{_unitdir}
@@ -35,5 +36,6 @@ mkdir -p %{buildroot}%{_unitdir}
 %{_bindir}/superwaspd
 %defattr(-,root,root,-)
 %{_unitdir}/superwaspd.service
+%dir /var/tmp/daemon_home/astropy
 
 %changelog

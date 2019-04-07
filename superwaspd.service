@@ -3,6 +3,8 @@ Description=Daemon for exposing the SuperWASP weather log via Pyro.
 After=syslog.target
 Wants=network-online.target
 After=network-online.target
+Environment="XDG_CONFIG_HOME=/var/tmp/daemon_home"
+Environment="XDG_CACHE_HOME=/var/tmp/daemon_home"
 
 [Service]
 Restart=on-failure
