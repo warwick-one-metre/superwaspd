@@ -1,12 +1,12 @@
 Name:      observatory-superwasp-server
-Version:   2.1.1
+Version:   2.1.2
 Release:   0
 Url:       https://github.com/warwick-one-metre/superwaspd
 Summary:   SuperWASP weather log client for the Warwick one-metre telescope.
 License:   GPL-3.0
 Group:     Unspecified
 BuildArch: noarch
-Requires:  python36, python36-Pyro4, python36-astropy, python36-warwick-observatory-common
+Requires:  python3, python3-Pyro4, python3-astropy, python3-warwick-observatory-common
 Requires:  observatory-log-client, %{?systemd_requires}
 
 %description
